@@ -1,0 +1,54 @@
+spring:
+
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+  #  datasource:
+#    url: jdbc:mysql://localhost:3306/noti?serverTimezone=UTC&characterEncoding=UTF-8
+#    username: root
+#    password: 1234
+
+#  data:
+#    mongodb:
+#      host: 34.80.57.140
+#      port: 27017
+#      database: community
+##      authentication-database: admin
+#      username: community
+#      password: community
+
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: test
+      #      authentication-database: admin
+      username: test
+      password: test
+
+#  jpa:
+#    hibernate:
+#      ddl-auto: create
+#    properties:
+#      hibernate:
+#      format_sql: true
+#    database-platform: org.hibernate.dialect.MySQLDialect
+
+  kafka:
+    consumer:
+      bootstrap-servers: localhost:9092
+      group-id: noti
+    producer:
+      bootstrap-servers: localhost:9092
+
+logging:
+  level:
+    #http request logging
+    org.apache.coyote.http11: debug
+#    com.example.notiservice: debug
+    org:
+      hibernate:
+        SQL: debug
+        type.descriptor.sql.BasicBinder: trace
+

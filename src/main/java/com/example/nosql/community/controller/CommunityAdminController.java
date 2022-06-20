@@ -4,7 +4,7 @@ import com.example.nosql.community.document.BoardPermission;
 import com.example.nosql.community.dto.BoardAuthorityDto;
 import com.example.nosql.community.dto.CommonBoardUpdateDto;
 import com.example.nosql.community.dto.MemberBoardUpdateDto;
-import com.example.nosql.community.service.CommunityService;
+import com.example.nosql.community.service.CommunityAdminService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,7 +16,7 @@ import java.util.List;
 //todo API접근권한 게시판 관리자권한만 가능하도록 @PreAuthorize 설정 필요
 public class CommunityAdminController {
 
-    private final CommunityService communityService;
+    private final CommunityAdminService communityService;
 
     @GetMapping("/community/admin/{companySeq}")
     public BoardPermission boardPermission(@PathVariable Long companySeq){

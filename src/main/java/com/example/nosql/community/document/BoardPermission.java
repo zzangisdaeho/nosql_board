@@ -1,5 +1,7 @@
 package com.example.nosql.community.document;
 
+import com.example.nosql.audit.AuditConfig;
+import com.example.nosql.audit.MongoAuditMetadata;
 import lombok.*;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.Id;
@@ -16,15 +18,16 @@ import java.util.function.Predicate;
 @Document(collection = "boardPermissions")
 @AllArgsConstructor
 @NoArgsConstructor
-public class BoardPermission {
+public class BoardPermission extends MongoAuditMetadata {
 
     @Id
     private Long companySeq;
     private BoardCreateRight boardCreateRight;
     private List<CommonBoard> commonBoards;
     private List<MemberBoard> memberBoards;
-    @Version
-    private int version;
+//    @Version
+//    private int version;
+
 
     @Getter
     @AllArgsConstructor
@@ -50,8 +53,8 @@ public class BoardPermission {
             this.necessary = necessary;
         }
 
-        public void updateBoardInfo(String boardName, boolean entireAccess, AccessRight accessRight, boolean use, boolean necessary){
-            super.updateBoardInfo(boardName, entireAccess, accessRight, use);
+        public void updateBoardInfo(String boardName, boolean entireAccess, boolean use, boolean necessary){
+            super.updateBoardInfo(boardName, entireAccess, use);
             this.necessary = necessary;
         }
 
@@ -59,6 +62,7 @@ public class BoardPermission {
 
     @Getter
     @NoArgsConstructor
+    @EqualsAndHashCode
     public static class MemberBoard {
         private String boardId = UUID.randomUUID().toString();
         private String boardName;
@@ -68,6 +72,7 @@ public class BoardPermission {
         private String googleDriveFolderUuid;
         private Long createUser;
         private LocalDateTime createDate;
+        private boolean isMandatory;
 
         public MemberBoard(String boardName, boolean entireAccess, AccessRight accessRight, boolean use, Long createUser) {
             this.boardName = boardName;
@@ -76,6 +81,11 @@ public class BoardPermission {
             this.use = use;
             this.createUser = createUser;
             this.createDate = LocalDateTime.now();
+        }
+
+        // 기본 공용 폴더 생성시에만 사용!! 함부로 쓰지마세요. 진짜 화낼꺼임
+        public void defaultCommonFolder(){
+            this.isMandatory = true;
         }
 
         // memberSeq가 게시판 맴버에 등록되어 있는지 체크
@@ -109,10 +119,9 @@ public class BoardPermission {
             return isTeamInList(teamSeqList) || isMemberInList(memberSeq);
         }
 
-        public void updateBoardInfo(String boardName, boolean entireAccess, AccessRight accessRight, boolean use){
+        public void updateBoardInfo(String boardName, boolean entireAccess, boolean use){
             this.boardName = boardName;
             this.entireAccess = entireAccess;
-            this.accessRight = accessRight;
             this.use = use;
         }
     }
@@ -123,6 +132,16 @@ public class BoardPermission {
     public static class AccessRight {
         private Set<Long> teamList = new HashSet<>();
         private Set<Long> memberList = new HashSet<>();
+
+        public void addTeamAuthority(List<Long> teamList){
+            this.teamList.clear();
+            this.teamList.addAll(teamList);
+        }
+
+        public void addMemberAuthority(List<Long> memberList){
+            this.memberList.clear();
+            this.memberList.addAll(memberList);
+        }
     }
 
     // 게시판 id로 어떤 게시판인지 찾아옴
@@ -206,5 +225,12 @@ public class BoardPermission {
         return board -> board.getBoardId().equals(targetId);
     }
 
+    public void deleteBoard(List<String> boardIdList){
+        //기본 폴더 지우려는지 먼저 검사
+        if (boardIdList.stream().anyMatch(boardId -> findBoard(boardId).isMandatory)) throw new IllegalStateException("기본 공용 폴더는 삭제 불가능합니다");
+
+        this.memberBoards.removeIf(memberBoard -> boardIdList.contains(memberBoard.getBoardId()));
+        this.commonBoards.removeIf(commonBoard -> boardIdList.contains(commonBoard.getBoardId()));
+    }
 
 }

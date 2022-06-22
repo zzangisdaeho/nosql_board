@@ -1,22 +1,17 @@
 package com.example.nosql.document;
 
-import com.example.nosql.audit.MongoAuditMetadata;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.UUID;
 
 @Data
-@Document(collection = "test")
 @AllArgsConstructor
 @NoArgsConstructor
-public class TestDocument extends MongoAuditMetadata {
+public class TestDto {
 
-    @Id
-    private Long companySeq;
+    private Long id;
     private BoardCreateRight boardCreateRight;
 
     @Data

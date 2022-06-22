@@ -12,7 +12,7 @@ import java.util.Optional;
 public class AuditConfig{
 
     @Bean
-    public AuditorAware<String> auditProvider(){
-        return () -> Optional.of("auditor");
+    public AuditorAware<Long> auditProvider(){
+        return () -> Optional.of(0L);
     }
 }

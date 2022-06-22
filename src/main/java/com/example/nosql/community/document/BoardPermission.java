@@ -1,12 +1,11 @@
 package com.example.nosql.community.document;
 
-import com.example.nosql.audit.AuditConfig;
 import com.example.nosql.audit.MongoAuditMetadata;
-import lombok.*;
-import org.springframework.data.annotation.CreatedBy;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.data.annotation.Version;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
@@ -25,8 +24,6 @@ public class BoardPermission extends MongoAuditMetadata {
     private BoardCreateRight boardCreateRight;
     private List<CommonBoard> commonBoards;
     private List<MemberBoard> memberBoards;
-//    @Version
-//    private int version;
 
 
     @Getter
@@ -231,6 +228,10 @@ public class BoardPermission extends MongoAuditMetadata {
 
         this.memberBoards.removeIf(memberBoard -> boardIdList.contains(memberBoard.getBoardId()));
         this.commonBoards.removeIf(commonBoard -> boardIdList.contains(commonBoard.getBoardId()));
+    }
+
+    public boolean checkExistBoardInMemberBoard(String boardId){
+        return this.memberBoards.stream().anyMatch(isBoardOfId(boardId));
     }
 
 }

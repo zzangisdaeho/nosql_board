@@ -24,6 +24,9 @@ dependencies {
     implementation 'io.springfox:springfox-boot-starter:3.0.0'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
+    // ModelMapper
+    implementation 'org.modelmapper:modelmapper:2.4.4'
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 

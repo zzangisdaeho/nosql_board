@@ -45,6 +45,7 @@ spring:
 logging:
   level:
     #http request logging
+    org.springframework.data.mongodb.core.MongoTemplate: DEBUG
     org.apache.coyote.http11: debug
 #    com.example.notiservice: debug
     org:

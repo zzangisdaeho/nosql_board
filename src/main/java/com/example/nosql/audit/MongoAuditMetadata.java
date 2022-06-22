@@ -17,10 +17,10 @@ public class MongoAuditMetadata {
     private LocalDateTime lastModifiedDate;
 
     @CreatedBy
-    private String createdByUser;
+    private Long createdBy;
 
     @LastModifiedBy
-    private String modifiedByUser;
+    private Long modifiedBy;
 
     @Version
     private Integer version;

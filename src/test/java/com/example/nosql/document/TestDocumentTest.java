@@ -1,13 +1,14 @@
 package com.example.nosql.document;
 
+import com.example.nosql.community.document.PersonalBoardConfig;
+import com.example.nosql.community.repository.PersonalBoardConfigRepository;
 import com.example.nosql.repository.TestDocumentRepository;
 import org.junit.jupiter.api.Test;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.ArrayList;
-
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.List;
 
 @SpringBootTest
 class TestDocumentTest {
@@ -15,17 +16,43 @@ class TestDocumentTest {
     @Autowired
     TestDocumentRepository testDocumentRepository;
 
+    @Autowired
+    PersonalBoardConfigRepository personalBoardConfigRepository;
+
+    @Autowired
+    ModelMapper modelMapper;
+
     @Test
     void write(){
 
-        TestDocument testDocument = new TestDocument(3L, new TestDocument.BoardCreateRight(true, false));
+        TestDocument testDocument = new TestDocument(5L, new TestDocument.BoardCreateRight(true, false));
 
         testDocumentRepository.save(testDocument);
     }
 
     @Test
     void read(){
-        TestDocument byBoardCreateRightSeq = testDocumentRepository.findByBoardCreateRightSeq("91a8e86c-a66e-46fd-ac55-b65569fd5a4a");
-        System.out.println("byBoardCreateRightSeq = " + byBoardCreateRightSeq);
+        TestDocument testDocument = testDocumentRepository.findByBoardCreateRightSeq("f7d32765-12c1-4064-9b24-c4eef1d8b53c");
+        TestDto testDto = new TestDto(5L, new TestDto.BoardCreateRight(false, false));
+        System.out.println("testDocument = " + testDocument);
+
+        modelMapper.map(testDto, testDocument);
+
+        testDocumentRepository.save(testDocument);
+    }
+
+    @Test
+    void save(){
+        PersonalBoardConfig personalBoardConfig = new PersonalBoardConfig(1L, List.of("abc", "def"));
+        personalBoardConfigRepository.save(personalBoardConfig);
+    }
+
+    @Test
+    void load(){
+        PersonalBoardConfig a1 = personalBoardConfigRepository.findByPersonalOrderListContains("abc").get();
+        PersonalBoardConfig a2 = personalBoardConfigRepository.findByPersonalOrderListContains("abc").get();
+
+        boolean equals = a1.equals(a2);
+        System.out.println("equals = " + equals);
     }
 }

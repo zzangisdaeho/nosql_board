@@ -11,10 +11,10 @@ import java.util.List;
 import java.util.UUID;
 
 @Getter
-@Document(collection = "boards")
+@Document(collection = "posts")
 @AllArgsConstructor
 @NoArgsConstructor
-public class Board extends MongoAuditMetadata {
+public class Posts extends MongoAuditMetadata {
 
     @Id
     private String postId;
@@ -24,12 +24,12 @@ public class Board extends MongoAuditMetadata {
     private String content;
     private String googleFolderUuid;
     private List<FileInfo> files = new ArrayList<>();
-    private List<BoardComment> comments = new ArrayList<>();
+    private List<Comments> comments = new ArrayList<>();
 
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class BoardComment {
+    public static class Comments {
 
         private String commentId = UUID.randomUUID().toString();
         private String content;
@@ -67,18 +67,18 @@ public class Board extends MongoAuditMetadata {
         return this.getCreatedBy().equals(memberSeq);
     }
 
-    public BoardComment addComment(BoardComment comment){
+    public Comments addComment(Comments comment){
         this.comments.add(comment);
         return comment;
     }
 
-    public BoardComment getComment(String commentId){
+    public Comments getComment(String commentId){
         return this.comments.stream()
                 .filter(comment -> comment.getCommentId().equals(commentId)).findFirst()
                 .orElseThrow(() -> new IllegalStateException("해당 코멘트는 존재하지 않습니다"));
     }
 
-    public void removeComment(BoardComment comment){
+    public void removeComment(Comments comment){
         this.comments.removeIf(savedComment -> savedComment.equals(comment));
     }
 }

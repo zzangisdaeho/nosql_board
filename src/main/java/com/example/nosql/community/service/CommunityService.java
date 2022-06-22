@@ -1,6 +1,6 @@
 package com.example.nosql.community.service;
 
-import com.example.nosql.community.document.Board;
+import com.example.nosql.community.document.Posts;
 import com.example.nosql.community.document.BoardPermission;
 import com.example.nosql.community.document.PersonalBoardConfig;
 import com.example.nosql.community.dto.CommentUpdateRequestDto;
@@ -58,15 +58,15 @@ public class CommunityService {
         return myMemberBoards;
     }
 
+    //변한 개인 설정 값이 있으면 업데이트
     private void savePersonalConfigIfChanged(Long memberSeq, PersonalBoardConfig personalBoardConfig) {
-        //변한 개인 설정 값이 있으면 업데이트
         if(!communityRepository.getPersonalBoardConfig(memberSeq).equals(personalBoardConfig)){
             communityRepository.updatePersonalBoardConfig(personalBoardConfig);
         }
     }
 
+    //존재하는 게시판 중 나의 설정값에 없는 게시판이 있는지 확인. 있으면 하단에 추가
     private void checkPersonalConfigContainsAllBoards(BoardPermission boardPermission, PersonalBoardConfig personalBoardConfig) {
-        //존재하는 게시판 중 나의 설정값에 없는 게시판이 있는지 확인. 있으면 하단에 추가
         boardPermission.getMemberBoards().forEach(memberBoard -> {
             boolean exist = personalBoardConfig.checkExistBoardId(memberBoard.getBoardId());
             if(!exist) personalBoardConfig.addBoardId(memberBoard.getBoardId());
@@ -97,51 +97,53 @@ public class CommunityService {
         return getMyPersonalOrderMemberBoard(personalBoardConfig, memberBoards);
     }
 
-    public Board writeBoard(PostCreateRequestDto boardCreateRequestDto) {
+    public Posts writePost(PostCreateRequestDto boardCreateRequestDto) {
 
-        Board board = modelMapper.map(boardCreateRequestDto, Board.class);
+        Posts board = modelMapper.map(boardCreateRequestDto, Posts.class);
         //todo driveFolder create and move files and set driveFolder
 
 
 
-        return communityRepository.saveBoard(board);
+        return communityRepository.savePost(board);
     }
 
-    public Board updateBoard(PostUpdateRequestDto boardUpdateRequestDto){
-        Board board = communityRepository.getBoard(boardUpdateRequestDto.getPostId());
+    public Posts updatePost(PostUpdateRequestDto boardUpdateRequestDto){
+        Posts board = communityRepository.getPost(boardUpdateRequestDto.getPostId());
 
         modelMapper.map(board, boardUpdateRequestDto);
 
-        return communityRepository.saveBoard(board);
+        return communityRepository.savePost(board);
     }
 
-    public void deleteBoard(String boardId) {
-        communityRepository.deleteBoard(boardId);
+    public void deletePost(String boardId) {
+        communityRepository.deletePost(boardId);
     }
 
-    public Board.BoardComment addComment(CommentCreateRequestDto commentCreateRequestDto){
-        Board board = communityRepository.getBoard(commentCreateRequestDto.getPostId());
-        Board.BoardComment comment = modelMapper.map(commentCreateRequestDto, Board.BoardComment.class);
+    public Posts.Comments addComment(CommentCreateRequestDto commentCreateRequestDto){
+        Posts board = communityRepository.getPost(commentCreateRequestDto.getPostId());
+        Posts.Comments comment = modelMapper.map(commentCreateRequestDto, Posts.Comments.class);
         board.addComment(comment);
 
-        communityRepository.updateBoard(board);
+        communityRepository.updatePost(board);
 
         return comment;
     }
 
 
-    public Board.BoardComment updateComment(CommentUpdateRequestDto commentUpdateRequestDto) {
-        Board board = communityRepository.getBoard(commentUpdateRequestDto.getBoardId());
-        Board.BoardComment comment = board.getComment(commentUpdateRequestDto.getCommentId());
+    public Posts.Comments updateComment(CommentUpdateRequestDto commentUpdateRequestDto) {
+        Posts board = communityRepository.getPost(commentUpdateRequestDto.getBoardId());
+        Posts.Comments comment = board.getComment(commentUpdateRequestDto.getCommentId());
         modelMapper.map(board, comment);
 
-        communityRepository.updateBoard(board);
+        communityRepository.updatePost(board);
 
         return comment;
     }
 
     public void deleteComment(String postId, String commentId) {
-        Board board = communityRepository.getBoard(postId);
+        Posts board = communityRepository.getPost(postId);
         board.removeComment(board.getComment(commentId));
+
+        communityRepository.updatePost(board);
     }
 }

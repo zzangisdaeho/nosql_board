@@ -1,6 +1,6 @@
 package com.example.nosql.community.repository;
 
-import com.example.nosql.community.document.Board;
+import com.example.nosql.community.document.Posts;
 import com.example.nosql.community.document.BoardPermission;
 import com.example.nosql.community.document.PersonalBoardConfig;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,7 @@ public class CommunityRepository {
 
     private final BoardPermissionRepository boardPermissionRepository;
     private final PersonalBoardConfigRepository personalBoardConfigRepository;
-    private final BoardRepository boardRepository;
+    private final PostRepository postRepository;
     private final MongoTemplate template;
 
     public BoardPermission getBoardPermission(Long companySeq) {
@@ -48,19 +48,19 @@ public class CommunityRepository {
         return personalBoardConfigRepository.save(personalBoardConfig);
     }
 
-    public Board saveBoard(Board board){
-        return boardRepository.save(board);
+    public Posts savePost(Posts post){
+        return postRepository.save(post);
     }
 
-    public Board updateBoard(Board board){
-        return boardRepository.save(board);
+    public Posts updatePost(Posts post){
+        return postRepository.save(post);
     }
 
-    public void deleteBoard(String boardId){
-        boardRepository.deleteById(boardId);
+    public void deletePost(String postId){
+        postRepository.deleteById(postId);
     }
 
-    public Board getBoard(String id){
-        return boardRepository.findById(id).orElseThrow(() -> new IllegalStateException("존재하지 않는 게시물입니다"));
+    public Posts getPost(String postId){
+        return postRepository.findById(postId).orElseThrow(() -> new IllegalStateException("존재하지 않는 게시물입니다"));
     }
 }

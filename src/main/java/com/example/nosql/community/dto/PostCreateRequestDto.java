@@ -1,6 +1,6 @@
 package com.example.nosql.community.dto;
 
-import com.example.nosql.community.document.Board;
+import com.example.nosql.community.document.Posts;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -13,6 +13,6 @@ public class PostCreateRequestDto {
     private boolean topFixed;
     private String title;
     private String content;
-    private List<Board.FileInfo> files = new ArrayList<>();
+    private List<Posts.FileInfo> files = new ArrayList<>();
     private List<Long> notificationList = new ArrayList<>();
 }

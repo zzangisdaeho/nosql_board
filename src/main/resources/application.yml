@@ -18,16 +18,19 @@ spring:
 #      username: community
 #      password: community
 
+#  data:
+#    mongodb:
+#      host: localhost
+#      port: 27017
+#      database: test
+#      #      authentication-database: admin
+#      username: test
+#      password: test
   data:
     mongodb:
-      host: localhost
-      port: 27017
-      database: test
-      #      authentication-database: admin
-      username: test
-      password: test
+      uri: mongodb+srv://zzangisdaeho:eoghslarj1!@mongo-daeho.obyuvrw.mongodb.net/test?retryWrites=true&w=majority
 
-#  jpa:
+  #  jpa:
 #    hibernate:
 #      ddl-auto: create
 #    properties:

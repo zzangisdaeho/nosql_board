@@ -25,7 +25,7 @@ class TestDocumentTest {
     @Test
     void write(){
 
-        TestDocument testDocument = new TestDocument(5L, new TestDocument.BoardCreateRight(true, false));
+        TestDocument testDocument = new TestDocument(1L, new TestDocument.BoardCreateRight(true, false));
 
         testDocumentRepository.save(testDocument);
     }
